@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from 'react'
+import './App.css'
+import { Card } from './Card'
+import { MoneyButton } from './MoneyButton'
+import { MoneyDisplay } from './MoneyDisplay'
+import { getJson } from './Utility'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [money, setMoney] = useState(450)
+    const [products, setProducts] = useState([])
+
+    useEffect(() => {
+        getJson('https://dummyjson.com/products').then(data => setProducts(data.products))
+    }, [])
+
+    return (
+        <div className="App">
+            <MoneyDisplay money={money} />
+            <MoneyButton setMoney={setMoney} />
+            {products.map((item, index) => (
+                <Card
+                    key={index}
+                    src={item.thumbnail}
+                    name={item.title}
+                    price={item.price}
+                    money={money}
+                    setMoney={setMoney}
+                />
+            ))}
+        </div>
+    )
 }
 
-export default App;
+export default App
